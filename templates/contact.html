@@ -1,0 +1,101 @@
+{% load static %}
+{% include 'base.html' %}
+<!-- End Header -->
+  <!-- End Header -->
+
+
+
+  {% block body %}
+
+
+
+
+
+		<!-- Contact Us -->
+
+<!-- Contact Us -->
+<div class="container py-5">
+  {% include 'alert.html' %}
+
+  <div class="row g-4">
+
+    <!-- Contact Info -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100 p-4">
+        <h2 class="mb-3">Contact Us</h2>
+        <p class="text-muted mb-4">
+          There are many ways to contact us. You may drop us a line, give us a call or send an email —
+          choose what suits you the most.
+        </p>
+
+        <div class="mb-3">
+          <h6 class="fw-bold mb-1">Phone</h6>
+          <p class="mb-0">+(234) 806 713 9902</p>
+        </div>
+        <div class="mb-3">
+          <h6 class="fw-bold mb-1">Email</h6>
+          <p class="mb-0">alexanderemmaneul1719@gmail.com</p>
+        </div>
+        <div class="mb-3">
+          <h6 class="fw-bold mb-1">Availability</h6>
+          <p class="mb-0">Always available to get feedback</p>
+        </div>
+        <div>
+          <h6 class="fw-bold mb-1">Opening Hours</h6>
+          <p class="mb-0">Mon–Fri: 8:00 – 18:00</p>
+          <p class="mb-0">Sunday: Closed</p>
+        </div>
+
+        <!-- Follow Us -->
+        <div class="mt-4">
+          <h4 class="mb-3">Follow Us</h4>
+          <div class="d-flex gap-3">
+            <a href="#" class="btn btn-primary rounded-circle"><i class="fa-brands fa-facebook"></i></a>
+            <a href="#" class="btn btn-info rounded-circle"><i class="fa-brands fa-twitter"></i></a>
+            <a href="#" class="btn btn-danger rounded-circle"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="#" class="btn btn-dark rounded-circle"><i class="fa-brands fa-instagram"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm h-100 p-4">
+        <h2 class="mb-3">Get In Touch With Us!</h2>
+        <p class="text-muted mb-4">Fill out the form below to receive a free and confidential response.</p>
+
+        <form action="{% url 'contact' %}" method="POST">
+          {% csrf_token %}
+          <div class="mb-3">
+            <input type="text" class="form-control" name="contact_name" placeholder="Name" required>
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control" name="email" placeholder="Email" required>
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" name="subject" placeholder="Subject" required>
+          </div>
+          <div class="mb-3">
+            <textarea class="form-control" name="description" placeholder="Message" rows="4" required></textarea>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-danger w-100">Send Message</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+	</div>
+
+
+
+
+{% endblock %}
+
+
+  <!-- ======= Footer ======= -->
+  {% include 'footer.html' %}

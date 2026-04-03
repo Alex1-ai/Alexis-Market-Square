@@ -1,0 +1,73 @@
+{% load static %}
+<!-- check -->
+{% include 'base.html' %}
+<!-- End Header -->
+<!-- End Header -->
+
+{% block body %}
+<!--  -->
+<section class="h-100" style="background-color: #e5e5f3;">
+  <div class="container py-5 h-100 d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+
+    {% if request.GET.command == 'verification' %}
+      <div class="alert alert-success text-center shadow-sm w-100" style="max-width: 600px;">
+        <h5 class="mb-3">Thank you for registering!</h5>
+        <p>
+          We have sent a verification email to: <strong>{{ request.GET.email }}</strong>
+        </p>
+        <p>
+          Already verified? <a href="{% url 'login' %}" class="text-decoration-none">Login</a>
+        </p>
+      </div>
+
+    {% else %}
+
+      <div class="card shadow rounded-4 w-100 h-95" >
+
+        <div class="card-body m-4 px-4 py-5">
+          {% include 'alert.html' %}
+
+          <h3 class="text-center mb-4">Login</h3>
+          <form action="{% url 'login' %}" method="POST">
+            {% csrf_token %}
+
+            <div class="mb-3 mx-3">
+              <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+
+            <div class="mb-3 mx-3">
+              <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+
+            <!-- <div class="mb-3 d-flex justify-content-between"> -->
+            <div  class="text-end mb-3 pr-5">
+              <a href="{% url 'forgotPassword' %}" class="text-decoration-none text-primary">Forgot password?</a>
+            </div>
+
+            <div class="d-grid mt-3 mx-3">
+              <button type="submit" class="btn btn-primary btn-lg">Login</button>
+            </div>
+          </form>
+
+          <div class="text-center mt-4">
+            <p class="mb-5">Don't have an account? <a href="{% url 'register' %}" class="text-primary text-decoration-none">Sign up</a></p>
+          </div>
+        </div>
+      </div>
+
+    {% endif %}
+
+  </div>
+</section>
+
+<!-- end block content -->
+{% endblock %}
+
+
+  <!-- Benefit -->
+
+<!-- Newsletter -->
+
+</section>
+    <!-- ======= Footer ======= -->
+{% include 'footer.html' %}

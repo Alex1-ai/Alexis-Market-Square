@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<section class="h-100 h-custom" style="background-color: #eeecf8;">
+
+    <div class="container py-5 h-100">
+
+      
+
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12">
+          <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card-body p-0">
+              <div class="row g-0">
+                <div class="col-lg-8">
+                  <div class="p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                      <h1 class="fw-bold mb-0 text-black">Billing Address</h1>
+                      <h6 class="mb-0 text-muted">{{quantity}} items</h6>
+                      <hr>
+                    </div>
+                    <hr class="my-4">
+                    <form action="{% url 'place_order' %}"  method="POST">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control text-dark" required>
+
+                            </div>
+                            <div class="col form-group">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" name="last_name" id="last_name" class="form-control text-dark" required>
+
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" name="email" id="email" class="form-control text-dark" required>
+
+                            </div>
+                            <div class="col form-group">
+                                <label for="phone">Phone Number:</label>
+                                <input type="tel" name="phone" id="phone" class="form-control text-dark" required>
+
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label for="address_line_1">Address Line 1:</label>
+                                <input type="text" name="address_line_1" id="address_line_1" class="form-control text-dark" required>
+
+                            </div>
+                            <div class="col form-group">
+                                <label for="address_line_2">Address Line 2:</label>
+                                <input type="text" name="address_line_2" id="address_line_2" class="form-control text-dark" >
+
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="col form-group">
+                                <label for="country">Country:</label>
+                                <input type="text" name="country" id="country" class="form-control text-dark" required>
+
+                            </div>
+                            <div class="col form-group">
+                                <label for="state">State:</label>
+                                <input type="text" name="state" id="state" class="form-control text-dark" required>
+
+                            </div>
+                            <div class="col form-group">
+                                <label for="city">City:</label>
+                                <input type="text" name="city" id="city" class="form-control text-dark" required>
+
+                            </div>
+                        </div>
+
+                        <!-- <div class="form-row">
+                            <div class="col form-group">
+                                <label for="city">City:</label>
+                                <input type="text" name="city" id="city" class="form-control" required>
+
+                            </div>
+                            
+                        </div> -->
+                        
+                        <div class="form-row">
+                           
+                                <div class="col form-group">
+                                    <label for="order_note">Order Note:</label>
+                                    <textarea type="text" name="order_note" rows="2" id="order_note" class="form-control text-dark" ></textarea>
+    
+                                </div>
+                         
+                        </div>
+
+                    
+                   
+  
+                 
+  
+                    <div class="pt-5">
+                      <h6 class="mb-0"><a href="{% url 'cart' %}" class="text-body"><i
+                            class="fas fa-long-arrow-alt-left me-2"></i>Back to cart</a></h6>
+                    </div>
+                    <hr class="my-4">
+
+                  </div>
+                </div>
+                <div class="col-lg-4 bg-grey">
+                  <div class="p-5">
+                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                    <hr class="my-4">
+  
+                    <div class="d-flex justify-content-between mb-4">
+                      <h5 class="text-uppercase">Total </h5>
+                      <h5>€ {{total}}</h5>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-4">
+                      <h5 class="text-uppercase">Tax </h5>
+                      <h5>€ {{tax}}</h5>
+                    </div>
+  
+                    <h5 class="text-uppercase mb-3">Shipping</h5>
+  
+                    <div class="mb-4 pb-2">
+                      <select class="select">
+                        <option value="1">Standard-Delivery- €{{standard_delivery}}.00</option>
+                        <!-- <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option> -->
+                      </select>
+                    </div>
+  
+                    <!-- <h5 class="text-uppercase mb-3">Give code</h5>
+  
+                    <div class="mb-5">
+                      <div class="form-outline">
+                        <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Examplea2">Enter your code</label>
+                      </div>
+                    </div> -->
+  
+                    <hr class="my-4">
+  
+                    <div class="d-flex justify-content-between mb-5">
+                      <h5 class="text-uppercase">Grand Total:</h5>
+                      <h5>€ {{grand_total}}</h5>
+                    </div>
+                    <hr class="my-4">
+                    <p class="text-center mb-3">
+                      <img src="{% static 'images/payments.png' %}" height="26">
+                    </p>
+                    <button type="submit" class="btn btn-dark btn-block btn-lg"
+                      data-mdb-ripple-color="dark">Place Order</button>
+                    
+                    <!-- <button type="button" class="btn btn-primary btn-block btn-lg"
+                      data-mdb-ripple-color="dark">Continue Shopping</button>
+   -->
+                  
+                  </div>
+                </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+ 
+    </div>
+  </section>
+  <!-- Benefit -->
+
+{% include 'benefit.html' %}
+
+<!-- Newsletter -->
+
+
+
+{% endblock %}

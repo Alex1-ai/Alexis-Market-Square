@@ -1,0 +1,89 @@
+{% load static %}
+{% include 'base.html' %}
+
+{% block body %}
+
+<section id="store" class="recent-posts sections-bg" style="background-color: #eee;">
+    <div class="container" data-aos="fade-up">
+
+        <!-- Header -->
+        <div class="section-header text-center mb-4">
+            {% if products %}
+                <h2>Welcome To {{ category }} Store</h2>
+                <p>Your happiness is our Passion. We provide Maximum delivery services to our valued customers</p>
+            {% else %}
+                <h2>No Shop Available</h2>
+                <p>Empty shops. Shops at this location have not been registered with us!</p>
+            {% endif %}
+        </div>
+
+        <!-- Products -->
+        <div class="row">
+            {% if products %}
+                {% for product in products %}
+                    {% if product.stock > 0 %}
+
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-4">
+                            <div class="card h-100">
+
+                                <!-- Image -->
+                                <div class="position-relative">
+                                    <a href="{{ product.get_url }}">
+                                        <img src="{{ product.image.url }}" class="w-100" />
+                                    </a>
+
+                                    <!-- Badge -->
+                                    {% if product.tagged %}
+                                        {% if product.tagged|lower == "new" %}
+                                            <span class="badge bg-primary position-absolute top-0 start-0 m-2 px-3 py-2">
+                                                {{ product.tagged }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger position-absolute top-0 end-0 m-2 px-3 py-2">
+                                                {{ product.tagged }}
+                                            </span>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+
+                                <!-- Body -->
+                                <div class="card-body text-center d-flex flex-column">
+
+                                    <a href="{{ product.get_url }}" class="text-reset">
+                                        <h5 class="card-title mb-2">{{ product.product_name|upper }}</h5>
+                                    </a>
+
+                                    <!-- Price -->
+                                    <h6 class="mb-3">
+                                        {% if product.old_price > 0 %}
+                                            <s class="text-muted">₦{{ product.old_price }}</s>
+                                        {% endif %}
+                                        <strong class="ms-2 text-danger">₦{{ product.price }}</strong>
+                                    </h6>
+
+                                    <!-- Button -->
+                                    <div class="mt-auto">
+                                        <a href="{{ product.get_url }}">
+                                            <span class="badge bg-success px-4 py-2">Details</span>
+                                        </a>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center">
+                    <h2>No result found. Please try again.</h2>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% include 'footer.html' %}

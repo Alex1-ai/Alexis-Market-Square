@@ -1,0 +1,331 @@
+{% load static %}
+<!-- check -->
+{% include 'base.html' %}
+<!-- End Header -->
+<!-- End Header -->
+
+{% block body %}
+
+<section class="h-100 h-custom" style="background-color: #eeecf8;">
+
+    <div class="container py-5 h-100">
+      <!-- <div class="spinner-border" style="position:fixed; top:50%; left:50%; tranform: translate(-50%, -50%); visibility:hidden; z-index:9999;"role="status" id="spinner">
+        <span class="sr-only">Loading...</span>
+      </div> -->
+
+
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12">
+          <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card-body p-0">
+              <div class="row g-0">
+                <div class="col-lg-8">
+                  <div class="p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                      <h3 class="fw-bold mb-0 text-black ">Review Your Order and Make Payment</h3>
+                      <!-- <h6 class="mb-0 text-muted">{{quantity}} items</h6> -->
+                      <hr>
+                    </div>
+                    <hr class="my-4">
+                    <div class="card">
+                        <h5 class="card-header">Billing Address</h5>
+                        <div class="card-body">
+                            <p class="card-text mb-0">
+                                {{ order.full_name}}
+                            </p>
+                            <p class="card-text mb-0">
+                              {{ order.full_address}}
+                          </p>
+                          <p class="card-text mb-0">
+                            {{ order.city}},  {{ order.state }}
+                        </p>
+                        <p class="card-text mb-0">
+                           {{ order.country}}
+                        </p>
+
+                        <p class="card-text mb-0">
+                          {{ order.email}}
+                       </p>
+
+                       <p class="card-text mb-0">
+                        {{ order.phone }}
+                     </p>
+
+                        {% if order.order_note %}
+                             <b>Order Note:</b> {{ order.order_note}}
+                        {% endif %}
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <div class="card">
+                        <h5 class="card-header">Payment Method</h5>
+                        <div class="card-body">
+                            <p class="card-text">
+                              {% if payment_type == 'payment_on_delivery' %}
+                                 Payment On Delivery
+                               {% else %}
+                                Paypal or Card Payment
+
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+                    <div class="card">
+                        <h5 class="card-header">Review Products</h5>
+                        <div class="card-body">
+                            <p class="card-text">
+                              {% for cart_item in cart_items %}
+
+                              <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 col-lg-2 col-xl-2">
+                                  <a href="{{ cart_item.product.get_url }}">  <img
+                                    src="{{ cart_item.product.image.url}}"
+                                    class="img-fluid rounded-3" alt="Cotton T-shirt">
+
+                                  </a>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-3">
+                                  <!-- <h6 class="text-muted">{{ cart_item.product.category}}</h6> -->
+                                  <h6 class="text-muted">
+                                    {% if cart_item.variations.all %}
+                                       {% for item in cart_item.variations.all %}
+                                         {{ item.variation_category | capfirst}} : {{ item.variation_value | capfirst}} <br>
+                                       {% endfor %}
+                                    {% endif %}
+                                  </h6>
+                                  <a href="{{ cart_item.product.get_url }}"><h6 class="text-black mb-0">{{ cart_item.product.product_name}}</h6></a>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                                 <div class="quantity_selector">
+                                    <div href="#"><span class=""></span></div>
+                                    <span id="quantity_value">{{cart_item.quantity}}</span>
+                                    <form action="{% url 'add_cart' cart_item.product.id %}" method="POST">
+                                      {% csrf_token %}
+                                      {% for item in cart_item.variations.all %}
+                                         <input type="hidden" name="{{item.variation_category | lower}}" value="{{ item.variation_value | capfirst}}">
+                                      {% endfor %}
+
+                                      <!-- <button class="btn btn-light" type="submit"><span class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span></button> -->
+                                    </form>
+                                  </div>
+                                </div>
+                                <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                                  <h6 class="mb-0">₦ {{cart_item.sub_total}}</h6>
+                                  <small class="text-muted">₦ {{cart_item.product.price}}</small>
+                                </div>
+                                <!-- <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                                  <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" onclick="return confirm('Are you sure you want to delete this product?')" class="text-muted"><i class="fas fa-trash-alt" style="color: #fe4c50"></i></a>
+                                </div> -->
+                              </div>
+
+                              <hr class="my-4">
+                              {% endfor %}
+
+                            </p>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+
+
+                    <div class="pt-5">
+                      <h6 class="mb-0"><a href="{% url 'markets' %}" class="text-body"><i
+                            class="fas fa-long-arrow-alt-left me-2"></i>Back to store</a></h6>
+                    </div>
+                    <hr class="my-4">
+
+                  </div>
+                </div>
+                <div class="col-lg-4 bg-grey">
+                  <div class="p-5">
+                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between mb-4">
+                      <h5 class="text-uppercase">Total </h5>
+                      <h5>₦ {{total}}</h5>
+                    </div>
+
+                    <!-- <div class="d-flex justify-content-between mb-4">
+                      <h5 class="text-uppercase">Tax </h5>
+                      <h5>₦ {{tax}}</h5>
+                    </div> -->
+
+                    <h5 class="text-uppercase mb-3">Delivery</h5>
+
+                    <div class="mb-4 pb-2">
+                      <select class="select">
+                        <!-- <option value="1">Standard-Delivery- ₦{{ standard_delivery}}.00</option> -->
+                        <option value="1">Delivery fee depends on the location</option>
+                        <!-- <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option> -->
+                      </select>
+                    </div>
+
+                    <!-- <h5 class="text-uppercase mb-3">Give code</h5>
+
+                    <div class="mb-5">
+                      <div class="form-outline">
+                        <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Examplea2">Enter your code</label>
+                      </div>
+                    </div> -->
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between mb-5">
+                      <h5 class="text-uppercase">Grand Total:</h5>
+                      <h5>₦ {{grand_total}}</h5>
+                    </div>
+                    <hr class="my-4">
+                    <p class="text-center mb-3">
+                      <img src="{% static 'images/payments.png' %}" height="26">
+                    </p>
+
+                    {% if payment_type != 'paypal' %}
+
+                        <form action="{% url 'payments' %}" method="POST">
+                          {% csrf_token %}
+                          <input type="hidden" name="orderID" value="{{ order.order_number }}">
+                          <input type="hidden" name="payment_method" value="{{ payment_type }}">
+                          <p class="text-center">
+                            <button type="submit" class="btn btn-dark btn-block btn-lg px-5"
+                              data-mdb-ripple-color="dark">Order Now</button>
+                          </p>
+                        </form>
+
+                    {% else %}
+
+                      <div id="paypal-button-container">
+                      <!-- PayPal Button will load -->
+                      </div>
+                    {% endif %}
+
+                  </div>
+
+
+                    <!-- <a href="{% url 'checkout' %}" type="button" class="btn btn-dark btn-block btn-lg"
+                      data-mdb-ripple-color="dark">Make Payment</a> -->
+
+                    <!-- <button type="button" class="btn btn-primary btn-block btn-lg"
+                      data-mdb-ripple-color="dark">Continue Shopping</button>
+   -->
+
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+  <!-- Benefit -->
+
+
+<!-- Newsletter -->
+
+
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+  }
+  var amount = "{{ grand_total }}"
+  // var amount = 1
+  var url = "{%url 'payments'%}"
+  const csrftoken = getCookie('csrftoken');
+  var orderId = "{{order.order_number}}"
+  var payment_method = "{{ payment_type }}"
+  var redirect_url = "{% url 'order_complete' %}"
+
+
+  // paypal buttons
+  paypal.Buttons({
+    style: {
+      color: 'blue',
+      shape: 'rect',
+      label: 'pay',
+      height: 40
+      },
+    createOrder: function(data, actions){
+
+      return actions.order.create({
+        purchase_units:[{
+          amount:{
+
+              value: amount,
+
+          }
+        }]
+      });
+    },
+      onApprove: function(data, actions){
+        return actions.order.capture()
+        .then(function(details){
+          // Show succes message t the buyer
+          //console.log(details)
+          sendData();
+              function sendData(){
+                fetch(url, {
+                  method : 'POST',
+                  headers :{
+                    'Content-type' : "application/json",
+                    "X-CSRFToken": csrftoken,
+                  },
+                  body:  JSON.stringify({
+                    orderID : orderId,
+                    transID : details.id,
+                    payment_method : payment_method,
+                    status: details.status,
+                  }),
+
+
+                })
+                .then(response => response.json())
+                .then((data ) => {
+                  // hide spinner after getting response
+
+                  //console.log(" Success " ,data);
+                  //console.log("Transaction completed successfully")
+                  window.location.href = redirect_url +'?order_number='+data.order_number+'&payment_id='+data.transID
+
+
+              });
+
+
+              }
+        });
+      }
+  }).render('#paypal-button-container')
+</script>
+
+{% endblock %}
+
+
+  <!-- Benefit -->
+
+<!-- Newsletter -->
+
+</section>
+    <!-- ======= Footer ======= -->
+{% include 'footer.html' %}

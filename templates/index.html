@@ -1,0 +1,316 @@
+{% load static %}
+{% include 'base.html' %}
+<!-- End Header -->
+  <!-- End Header -->
+
+
+
+  {% block body %}
+  <!-- ======= Hero Section ======= -->
+  <section id="hero" class="hero">
+    <div class="container position-relative">
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start">
+          <!-- <h2>Welcome to <span>Online Market</span></h2> -->
+          <h2>{{homeWords.title}}</h2>
+         <!-- <p>Start Ordering your gloceries, bag of rice, Tomatoes, Yam etc from the comfort of your home, office.</p> -->
+          <p>{{homeWords.subtitle}}</p>
+          <div class="d-flex justify-content-center justify-content-lg-start">
+            <a style="text-decoration: none;"  href="#services" class="btn-get-started">Get Started</a>
+<a href="https://www.youtube.com/watch?v=uNL6lM7NOxc&autoplay=1"
+   class="glightbox btn-watch-video d-flex align-items-center">
+   <i class="bi bi-play-circle"></i><span>Watch Video</span>
+</a>
+          </div>
+        </div>
+        <div class="col-lg-6 order-1 order-lg-2">
+          <img src="{% static 'assets/img/shopping.jpg' %}" class="img-fluid rounded-5" alt="" data-aos="zoom-out" data-aos-delay="100">
+        </div>
+      </div>
+    </div>
+
+    <div class="icon-boxes position-relative">
+      <div class="container position-relative">
+        <div class="row gy-4 mt-5">
+
+          {% for feature in features %}
+
+          <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+            <div class="icon-box">
+              <div class="icon"><i class="{{feature.featureIcon}}"></i></div>
+              <h4 class="title"><a href="#services" class="stretched-link">{{feature.featureName}}</a></h4>
+            </div>
+          </div>
+          <!--End Icon Box -->
+          {% endfor %}
+
+
+
+        </div>
+      </div>
+    </div>
+
+    </div>
+  </section>
+  <!-- End Hero Section -->
+
+  <main id="main">
+        <!-- ======= Recent Blog Posts Section ======= -->
+        <section id="services" class="recent-posts sections-bg">
+          <div class="container" data-aos="fade-up">
+
+            <div class="section-header">
+              <h2> Our Services </h2>
+              {% if markets %}
+              <p>Your happiness is Our Passion. We provide Maximum delivery services to our valued customers</p>
+              {% else %}
+              <p>Empty shops. Services at this location have not been registered with us!</p>
+              {% endif %}
+            </div>
+
+            <div class="row gy-4">
+              {% if markets %}
+                    {% for market in markets %}
+
+                    {% if market.is_active %}
+                        <div class="col-xl-4 col-md-6">
+                          <article>
+
+                            <div class="post-img">
+                              {% comment %} <img src="{% static 'assets/img/blog/blog-1.jpg' %}" alt="" class="img-fluid"> {% endcomment %}
+                              <img src="{{market.market_image.url}}" alt="" class="img-fluid">
+                            </div>
+
+                            <p class="post-category">{{market.title}}</p>
+
+                            <h2 class="title">
+                              <a href="{{market.get_url}}">{{market.market_name}}</a>
+                            </h2>
+                            <div class = "btn btn-success">
+                              <a href="{{market.get_url}}" class="text-white">Open Market</a>
+
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                              {% comment %} <img src="{% static 'assets/img/blog/blog-author.jpg' %}" alt="" class="img-fluid post-author-img flex-shrink-0"> {% endcomment %}
+                              <div class="post-meta">
+                                {% comment %} <p class="post-author">Maria Doe</p>
+                                <p class="post-date">
+                                  <time datetime="2022-01-01">Jan 1, 2022</time>
+
+                                </p>  {% endcomment %}
+                                {% comment %} <div class = "btn btn-success">
+                                  <a href="#" class="text-white">Get Started</a>
+
+                                </div> {% endcomment %}
+
+
+                              </div>
+                            </div>
+
+                          </article>
+                        </div><!-- End post list item -->
+                    {%endif%}
+                    {% endfor %}
+
+              {% else %}
+              <div class="col-lg-12 order-1 order-lg-2">
+                <img src="{% static 'assets/img/empty_cart.png' %}" class="img-fluid rounded-5" alt="" data-aos="zoom-out" data-aos-delay="100">
+                </div>
+
+
+              {% endif %}
+
+            </div><!-- End recent posts list -->
+
+          </div>
+        </section><!-- End Recent Blog Posts Section -->
+
+
+    <!-- ======= Clients Section ======= -->
+    <section id="clients" class="clients">
+      <div class="container" data-aos="zoom-out">
+
+        <div class="clients-slider swiper">
+          <div class="swiper-wrapper align-items-center">
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-1.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-2.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-3.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-4.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-5.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-6.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-7.png' %}" class="img-fluid" alt=""></div>
+            <div class="swiper-slide"><img src="{% static 'assets/img/clients/client-8.png' %}" class="img-fluid" alt=""></div>
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Clients Section -->
+
+    <!-- ======= Stats Counter Section ======= -->
+    <section id="stats-counter" class="stats-counter">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row gy-4 align-items-center">
+
+          <div class="col-lg-6">
+            <img src="{% static 'assets/img/stats-img.svg'%}" alt="" class="img-fluid">
+          </div>
+
+          <div class="col-lg-6">
+
+            <div class="stats-item d-flex align-items-center">
+              <span data-purecounter-start="0" data-purecounter-end="232" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Happy Clients</strong> We are always availabe and ready to render our services  </p>
+            </div><!-- End Stats Item -->
+
+            <div class="stats-item d-flex align-items-center">
+              <span data-purecounter-start="0" data-purecounter-end="521" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Projects</strong> We make sure we deliver our projects as accurate and eficcient as possible</p>
+            </div><!-- End Stats Item -->
+
+            <div class="stats-item d-flex align-items-center">
+              <span data-purecounter-start="0" data-purecounter-end="453" data-purecounter-duration="1" class="purecounter"></span>
+              <p><strong>Hours Of Support</strong> Always Available to Render Services</p>
+            </div><!-- End Stats Item -->
+
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Stats Counter Section -->
+
+    <!-- ======= Call To Action Section ======= -->
+    <section id="call-to-action" class="call-to-action">
+      <div class="container text-center" data-aos="zoom-out">
+        {% comment %} <a href="https://www.youtube.com/watch?v=LXb3EKWsInQ" class="glightbox play-btn"></a> {% endcomment %}
+        <a href="https://www.youtube.com/watch?v=uNL6lM7NOxc&autoplay=1" class="glightbox play-btn"></a>
+        <h3>Call To Action</h3>
+        <p>Why waste time and gas driving to the store when you can order everything you need from the comfort of your own home. With our fast and reliable delivery service, you'll never have to worry about running out of your essentials.</p>
+        <a class="cta-btn" href="#services">Call To Action</a>
+      </div>
+    </section><!-- End Call To Action Section -->
+
+
+
+    <!-- ======= Testimonials Section ======= -->
+    <section id="testimonials" class="testimonials">
+      <div class="container" data-aos="fade-up">
+
+        <div class="section-header">
+          <h2>Testimonials</h2>
+          <p>These are various testimonies coming from our cherished customers. You can also leave us a review.
+        </div>
+
+        <div class="slides-3 swiper" data-aos="fade-up" data-aos-delay="100">
+          <div class="swiper-wrapper">
+
+            {% for testimony in testimonies %}
+            {% if testimony.is_accepted %}
+                <div class="swiper-slide">
+                  <div class="testimonial-wrap">
+                    <div class="testimonial-item">
+                      <div class="d-flex align-items-center">
+                        <div>
+                          <h3>{{ testimony.name }}</h3>
+                          <h4>{{testimony.job_title}}</h4>
+
+                          <div class="stars">
+                            {% if testimony.rating == 5 %}
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i>
+                            {% elif testimony.rating == 4 %}
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
+                            {% elif testimony.rating == 3 %}
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                            {% elif testimony.rating == 2 %}
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                            {% elif testimony.rating == 1 %}
+                            <i class="bi bi-star-fill"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                            {% else %}
+                            <i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i><i class="bi bi-star"></i>
+                            {% endif %}
+                            {% comment %} <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i> {% endcomment %}
+                          </div>
+                        </div>
+                      </div>
+                      <p>
+                        <i class="bi bi-quote quote-icon-left"></i>
+                      {{testimony.customer_review}}
+                        <i class="bi bi-quote quote-icon-right"></i>
+                      </p>
+                    </div>
+                  </div>
+                </div><!-- End testimonial item -->
+            {% endif %}
+            {% endfor %}
+
+          </div>
+          <div class="swiper-pagination"></div>
+        </div>
+
+      </div>
+    </section><!-- End Testimonials Section -->
+
+
+
+
+
+
+
+    <!-- ======= Frequently Asked Questions Section ======= -->
+    <section id="faq" class="faq">
+      <div class="container" data-aos="fade-up">
+
+        <div class="row gy-4">
+
+          <div class="col-lg-4">
+            <div class="content px-xl-5">
+              <h3>Frequently Asked <strong>Questions</strong></h3>
+              <p>
+                This is a list of questions and answers that aims to provide quick and easy information to visitors. It is a useful tool for helping users find answers to common questions and can improve the user experience by reducing the need for them to contact customer support or search elsewhere for information
+              </p>
+            </div>
+          </div>
+          <div class="col-lg-8">
+
+
+
+            <div class="accordion accordion-flush" id="faqlist" data-aos="fade-up" data-aos-delay="100">
+
+             {% for faq in faqs %}
+              <div class="accordion-item">
+                <h3 class="accordion-header">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq-content-{{faq.number}}">
+                    <span class="num">{{faq.number}}.</span>
+                    {{faq.question}}
+
+                  </button>
+                </h3>
+                <div id="faq-content-{{faq.number}}" class="accordion-collapse collapse" data-bs-parent="#faqlist">
+                  <div class="accordion-body">
+                    {{faq.answer}}
+                  </div>
+                </div>
+              </div><!-- # Faq item-->
+              {% endfor%}
+
+                        </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section><!-- End Frequently Asked Questions Section -->
+
+
+
+
+
+  </main><!-- End #main -->
+
+{% endblock %}
+
+
+  <!-- ======= Footer ======= -->
+  {% include 'footer.html' %}

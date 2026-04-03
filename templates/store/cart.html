@@ -1,0 +1,180 @@
+{% load static %}
+<!-- check -->
+{% include 'base.html' %}
+<!-- End Header -->
+<!-- End Header -->
+
+{% block body %}
+
+<section class="h-100 h-custom" style="background-color: #eeecf8;">
+
+    <div class="container py-5 h-100">
+
+  {% if not cart_items %}
+   <br>
+   <br>
+  <h3 class="text-center">Your Shopping Cart is Empty</h3>
+  <br>
+  <div class="text-center">
+    <a href="{% url 'markets' %}" class="btn btn-primary">Continue Shopping</a>
+  </div>
+
+
+
+  <!--  -->
+
+  {% else %}
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-12">
+          <div class="card card-registration card-registration-2" style="border-radius: 15px;">
+            <div class="card-body p-0">
+              <div class="row g-0">
+                <div class="col-lg-8">
+                  <div class="p-5">
+                    <div class="d-flex justify-content-between align-items-center mb-5">
+                      <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
+                      <h6 class="mb-0 text-muted">{{quantity}} items</h6>
+                      <hr>
+                    </div>
+                    <hr class="my-4">
+                    {% for cart_item in cart_items %}
+
+                    <div class="row mb-4 d-flex justify-content-between align-items-center">
+                      <div class="col-md-2 col-lg-2 col-xl-2">
+                        <a href="{{ cart_item.product.get_url }}">  <img
+                          src="{{ cart_item.product.image.url}}"
+                          class="img-fluid rounded-3" alt="Cotton T-shirt">
+
+                        </a>
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-3">
+                        <!-- <h6 class="text-muted">{{ cart_item.product.category}}</h6> -->
+                        <h6 class="text-muted">
+                          {% if cart_item.variations.all %}
+                             {% for item in cart_item.variations.all %}
+                               {{ item.variation_category | capfirst}} : {{ item.variation_value | capfirst}} <br>
+                             {% endfor %}
+                          {% endif %}
+                        </h6>
+                        <a href="{{ cart_item.product.get_url }}"><h6 class="text-black mb-0">{{ cart_item.product.product_name}}</h6></a>
+                      </div>
+                      <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
+                       <div class="d-flex align-items-center gap-2">
+  <a class="btn btn-light p-1" href="{% url 'remove_cart' cart_item.product.id cart_item.id %}">
+    <span class="minus"><i class="fa fa-minus" aria-hidden="true"></i></span>
+  </a>
+
+  <span id="quantity_value">{{ cart_item.quantity }}</span>
+
+  <form action="{% url 'add_cart' cart_item.product.id %}" method="POST" class="d-inline">
+    {% csrf_token %}
+    {% for item in cart_item.variations.all %}
+      <input type="hidden" name="{{ item.variation_category|lower }}" value="{{ item.variation_value|capfirst }}">
+    {% endfor %}
+    <button class="btn btn-light p-1" type="submit">
+      <span class="plus"><i class="fa fa-plus" aria-hidden="true"></i></span>
+    </button>
+  </form>
+</div>
+
+                      </div>
+                      <div class="col-md-3 col-lg-2 col-xl-2 offset-lg-1">
+                        <h6 class="mb-0">₦ {{cart_item.sub_total}}</h6>
+                        <small class="text-muted">₦ {{cart_item.product.price}}</small>
+                      </div>
+                      <div class="col-md-1 col-lg-1 col-xl-1 text-end">
+                        <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" onclick="return confirm('Are you sure you want to delete this product?')" class="text-muted"><i class="fas fa-trash-alt" style="color: #fe4c50"></i></a>
+                      </div>
+                    </div>
+
+                    <hr class="my-4">
+                    {% endfor %}
+
+
+
+                    <!-- <hr class="my-4"> -->
+
+                    <div class="pt-5">
+                      <h6 class="mb-0"><a href="{% url 'markets' %}" class="text-body"><i
+                            class="fas fa-long-arrow-alt-left me-2"></i>Back to market</a></h6>
+                    </div>
+                    <hr class="my-4">
+
+                  </div>
+                </div>
+                <div class="col-lg-4 bg-grey">
+                  <div class="p-5">
+                    <h3 class="fw-bold mb-5 mt-2 pt-1">Summary</h3>
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between mb-4">
+                      <h5 class="text-uppercase">Total </h5>
+                      <h5>₦ {{total}}</h5>
+                    </div>
+
+                    <!-- <div class="d-flex justify-content-between mb-4">
+                      <h5 class="text-uppercase">Tax </h5>
+                      <h5>₦ {{tax}}</h5>
+                    </div> -->
+
+                    <h5 class="text-uppercase mb-3">Delivery</h5>
+
+                    <div class="mb-4 pb-2">
+                      <select class="select">
+                        <!-- <option value="1">Standard-Delivery- ₦{{ standard_delivery}}.00</option> -->
+                        <option value="1">Delivery fee depends on the location</option>
+                        <!-- <option value="2">Two</option>
+                        <option value="3">Three</option>
+                        <option value="4">Four</option> -->
+                      </select>
+                    </div>
+
+                    <!-- <h5 class="text-uppercase mb-3">Give code</h5>
+
+                    <div class="mb-5">
+                      <div class="form-outline">
+                        <input type="text" id="form3Examplea2" class="form-control form-control-lg" />
+                        <label class="form-label" for="form3Examplea2">Enter your code</label>
+                      </div>
+                    </div> -->
+
+                    <hr class="my-4">
+
+                    <div class="d-flex justify-content-between mb-5">
+                      <h5 class="text-uppercase">Grand Total:</h5>
+                      <h5>₦ {{grand_total}}</h5>
+                    </div>
+                    <hr class="my-4">
+                    <p class="text-center mb-3">
+                      <img src="{% static 'images/payments.png' %}" height="26">
+                    </p>
+                    <p class="text-center">
+                    <a href="{% url 'checkout' %}" type="button" class="btn btn-dark btn-block btn-lg px-lg-5"
+                      data-mdb-ripple-color="dark">Checkout</a>
+
+                    </p>
+                    <!-- <button type="button" class="btn btn-primary btn-block btn-lg"
+                      data-mdb-ripple-color="dark">Continue Shopping</button>
+   -->
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {% endif %}
+    </div>
+  </section>
+  <!-- Benefit -->
+
+<!-- Newsletter -->
+
+
+
+{% endblock %}
+</section>
+    <!-- ======= Footer ======= -->
+{% include 'footer.html' %}
