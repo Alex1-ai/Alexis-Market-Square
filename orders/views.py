@@ -71,7 +71,7 @@ def payments(request):
     CartItem.objects.filter(user=request.user).delete()
 
     # Admin email
-    mail_subject = 'OCE-MARKT ORDER MESSAGE'
+    mail_subject = 'ALEXIS-MARKET-SQUARE ORDER MESSAGE'
     message      = 'Hi Admin,\nSomeone just placed an order.'
     EmailMessage(mail_subject, message, to=[ADMIN_EMAIL]).send()
 
@@ -160,7 +160,7 @@ def payments(request):
 #     CartItem.objects.filter(user=request.user).delete()
 
 #     # send email notification to the admin
-#     mail_subject = 'OCE-MARKT ORDER MESSAGE'
+#     mail_subject = 'ALEXIS-MARKET-SQUARE ORDER MESSAGE'
 #     message = f"Hi Admin,\nPlease some one just Someone just placed an order Now."
 #     to_email = ADMIN_EMAIL
 #     admin_email = EmailMessage(

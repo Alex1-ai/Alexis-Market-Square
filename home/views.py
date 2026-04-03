@@ -71,7 +71,7 @@ def contact(request):
                 contact_name=contact_name, email=email, subject=subject, description=description)
             contact.save()
             # print("8")
-            mail_subject = 'OCE-MARKT CONTACT US MESSAGE'
+            mail_subject = 'ALEXIS-MARKET-SQUARE CONTACT US MESSAGE'
             message = render_to_string(
                 'accounts/contact_email.html', {
                     'user': contact,
@@ -127,7 +127,7 @@ def newsletter(request):
 
             subcriber = NewsletterSubscription.objects.create(email=email)
             subcriber.save()
-            mail_subject = 'OCE-MARKT SUBSCRIPTION MESSAGE'
+            mail_subject = 'ALEXIS-MARKET-SQUARE SUBSCRIPTION MESSAGE'
             message = f"Hi Admin,\nPlease some one just Subscribed to our newssletter."
             to_email = ADMIN_EMAIL
             send_email = EmailMessage(
