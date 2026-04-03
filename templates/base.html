@@ -93,12 +93,13 @@
         <ul>
             <li><a style="text-decoration: none;"  href="{% url 'home' %}">Home</a></li>
             <li><a style="text-decoration: none;" href="{% url 'markets' %}">Markets</a></li>
+            <li><a style="text-decoration: none;" href="{% url 'contact' %}">Contact</a></li>
 
             {% if user.id is not None %}
               <li><a style="text-decoration: none;" href="{% url 'dashboard' %}">Dashboard</a></li>
 
 
-              <li><a style="text-decoration: none;" href="{% url 'contact' %}">Contact</a></li>
+
               <li><a style="text-decoration: none; margin-right: 10px;" href="{% url 'logout' %}">Logout</a></li>
               <li class="border border-info p-2 text-light"> <a style="text-decoration: none;" style="text-decoration: none;" href="{% url 'dashboard' %}">Welcome {{ user.username|slice:":10" }} </a></li>
 
