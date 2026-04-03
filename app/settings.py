@@ -34,7 +34,7 @@ SECRET_KEY= os.environ.get('SECRET_KEY', "secret-key-if-not-configured-in-enviro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG')
 
-ALLOWED_HOSTS = [ "*", "oce-markt.onrender.com", "oce-markt.com"]
+ALLOWED_HOSTS = [ "*", "alexis-market-square.onrender.com"]
 
 
 # Application definition
@@ -119,16 +119,16 @@ AUTH_USER_MODEL = 'accounts.Account'
 
 
 # else:
-DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-
 # DATABASES = {
-#     'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600)
-# }
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#         }
+#     }
+
+DATABASES = {
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600)
+}
 # DATABASES['default']['OPTIONS'] = {
 #     'connect_timeout': 10,  # Timeout in seconds
 # }
