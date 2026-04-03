@@ -35,6 +35,7 @@ SECRET_KEY= os.environ.get('SECRET_KEY', "secret-key-if-not-configured-in-enviro
 DEBUG = os.environ.get('DEBUG')
 
 ALLOWED_HOSTS = [ "*", "alexis-market-square.onrender.com"]
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
 # Application definition
@@ -127,7 +128,7 @@ AUTH_USER_MODEL = 'accounts.Account'
 #     }
 
 DATABASES = {
-    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'), conn_max_age=600)
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 }
 # DATABASES['default']['OPTIONS'] = {
 #     'connect_timeout': 10,  # Timeout in seconds
