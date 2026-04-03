@@ -35,7 +35,7 @@ SECRET_KEY= os.environ.get('SECRET_KEY', "secret-key-if-not-configured-in-enviro
 # DEBUG = os.environ.get('DEBUG', False)
 DEBUG = False
 
-ALLOWED_HOSTS = [ "*", "alexis-market-square.onrender.com"]
+ALLOWED_HOSTS = [ "*", "alexis-market-square.onrender.com", 'localhost', '127.0.0.1']
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 
@@ -253,7 +253,8 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
