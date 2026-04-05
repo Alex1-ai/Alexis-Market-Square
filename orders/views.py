@@ -13,8 +13,8 @@ from django.template.loader import render_to_string
 import json
 from app.settings import STANDARD_DELIVERY
 from django.urls import reverse
-# import logging
-# logger = logging.getLogger(__name__)
+import logging
+logger = logging.getLogger(__name__)
 
 
 
@@ -27,11 +27,12 @@ def payments(request):
         payment_method = body['payment_method']
         status         = body['status']
     else:
+        logger.info("payments on delivery view started")
         order_id       = request.POST.get('orderID')
         trans_id       = 'POD-' + order_id  # no real transaction ID for cash
         payment_method = request.POST.get('payment_method')
         status         = 'PENDING'
-
+    logger.info("payments view started")
     order = Order.objects.get(
         user=request.user, is_ordered=False, order_number=order_id
     )
@@ -47,8 +48,9 @@ def payments(request):
     order.payment = payment
     order.is_ordered = True
     order.save()
-
+    logger.info("order saved")
     # Move cart items to OrderProduct table
+    logger.info("cart items processed")
     cart_items = CartItem.objects.filter(user=request.user)
     for item in cart_items:
         orderproduct = OrderProduct()
@@ -77,14 +79,17 @@ def payments(request):
         mail_subject = 'ALEXIS-MARKET-SQUARE ORDER MESSAGE'
         message      = 'Hi Admin,\nSomeone just placed an order.'
         EmailMessage(mail_subject, message, to=[ADMIN_EMAIL]).send(fail_silently=True)
-
+        logger.info("emails sent")
         # Customer email
         mail_subject = 'Order Successful!'
         message = render_to_string('orders/order_received_email.html', {
             'user': request.user,
             'order': order,
         })
+
+        logger.info("emails sent")
         EmailMessage(mail_subject, message, to=[request.user.email]).send(fail_silently=True)
+        logger.info("emails sent")
     except Exception as e:
         print("Error sending email:", e)
     # ── Different response for each payment type ──
@@ -95,6 +100,7 @@ def payments(request):
             'transID': payment.payment_id
         })
     else:
+        logger.info("emails sent 2")
         # Pay on Delivery: normal redirect
         url = reverse('order_complete')
         return redirect(
