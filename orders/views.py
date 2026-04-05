@@ -13,6 +13,9 @@ from django.template.loader import render_to_string
 import json
 from app.settings import STANDARD_DELIVERY
 from django.urls import reverse
+# import logging
+# logger = logging.getLogger(__name__)
+
 
 
 def payments(request):
@@ -73,7 +76,7 @@ def payments(request):
         # Admin email
         mail_subject = 'ALEXIS-MARKET-SQUARE ORDER MESSAGE'
         message      = 'Hi Admin,\nSomeone just placed an order.'
-        EmailMessage(mail_subject, message, to=[ADMIN_EMAIL]).send()
+        EmailMessage(mail_subject, message, to=[ADMIN_EMAIL]).send(fail_silently=True)
 
         # Customer email
         mail_subject = 'Order Successful!'
@@ -81,7 +84,7 @@ def payments(request):
             'user': request.user,
             'order': order,
         })
-        EmailMessage(mail_subject, message, to=[request.user.email]).send()
+        EmailMessage(mail_subject, message, to=[request.user.email]).send(fail_silently=True)
     except Exception as e:
         print("Error sending email:", e)
     # ── Different response for each payment type ──
@@ -200,7 +203,8 @@ def place_order(request, total=0, quantity=0):
     current_user = request.user
 
     # if the cart count is less than or equal to 0, the redirect back to shop
-    cart_items = CartItem.objects.filter(user=current_user)
+    # cart_items = CartItem.objects.filter(user=current_user)
+    cart_items = CartItem.objects.filter(user=request.user).select_related('product')
     cart_count = cart_items.count()
     if cart_count <= 0:
         return redirect('store')
