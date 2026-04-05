@@ -69,20 +69,21 @@ def payments(request):
         product.save()
 
     CartItem.objects.filter(user=request.user).delete()
+    try:
+        # Admin email
+        mail_subject = 'ALEXIS-MARKET-SQUARE ORDER MESSAGE'
+        message      = 'Hi Admin,\nSomeone just placed an order.'
+        EmailMessage(mail_subject, message, to=[ADMIN_EMAIL]).send()
 
-    # Admin email
-    mail_subject = 'ALEXIS-MARKET-SQUARE ORDER MESSAGE'
-    message      = 'Hi Admin,\nSomeone just placed an order.'
-    EmailMessage(mail_subject, message, to=[ADMIN_EMAIL]).send()
-
-    # Customer email
-    mail_subject = 'Order Successful!'
-    message = render_to_string('orders/order_received_email.html', {
-        'user': request.user,
-        'order': order,
-    })
-    EmailMessage(mail_subject, message, to=[request.user.email]).send()
-
+        # Customer email
+        mail_subject = 'Order Successful!'
+        message = render_to_string('orders/order_received_email.html', {
+            'user': request.user,
+            'order': order,
+        })
+        EmailMessage(mail_subject, message, to=[request.user.email]).send()
+    except Exception as e:
+        print("Error sending email:", e)
     # ── Different response for each payment type ──
     if request.content_type == 'application/json':
         # PayPal: JavaScript fetch() expects JSON back
