@@ -120,31 +120,7 @@ def payments(request):
 
     # ── 4. Fire emails asynchronously via Celery ─────────────────────
     # send_order_emails.delay(request.user.id, order.id)
-    # ── 4. Fire emails asynchronously  ─────────────────────
-    # Admin email
-    admin_email = EmailMessage(
-        'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
-        'Hi Admin,\nSomeone just placed an order.',
-        to=[ADMIN_EMAIL]
-    )
-    # send_email(admin_email)
-    admin_email.send()
 
-
-    # Customer email
-    message = render_to_string('orders/order_received_email.html', {
-        'user': request.user,
-        'order': order,
-    })
-
-    customer_email = EmailMessage(
-        'Order Successful!',
-        message,
-        to=[request.user.email]
-    )
-    # send_email(customer_email)
-    customer_email.send()
-    print("sent email")
 
     # ── 5. Return response ────────────────────────────────────────────
     if is_json:
@@ -353,6 +329,31 @@ def order_complete(request):
             'subtotal': subtotal,
             'standard_delivery': STANDARD_DELIVERY
         }
+         # ── 4. Fire emails asynchronously  ─────────────────────
+        # Admin email
+        admin_email = EmailMessage(
+            'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
+            'Hi Admin,\nSomeone just placed an order.',
+            to=[ADMIN_EMAIL]
+        )
+        # send_email(admin_email)
+        admin_email.send()
+
+
+        # Customer email
+        message = render_to_string('orders/order_received_email.html', {
+            'user': request.user,
+            'order': order,
+        })
+
+        customer_email = EmailMessage(
+            'Order Successful!',
+            message,
+            to=[request.user.email]
+        )
+        # send_email(customer_email)
+        customer_email.send()
+        print("sent email")
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
