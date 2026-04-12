@@ -50,7 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'admin_honeypot',
+    # 'admin_honeypot',
     'cloudinary_storage',
     'cloudinary',
     'home',
@@ -288,7 +288,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-
+EMAIL_SSL_KEYFILE = None
+EMAIL_SSL_CERTFILE = None
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
@@ -328,4 +329,24 @@ CLOUDINARY_STORAGE = {
     'CLOUD_NAME':os.environ.get('CLOUD_NAME'),
     'API_KEY': os.environ.get('API_KEY'),
     'API_SECRET': os.environ.get('API_SECRET')
+}
+
+
+##########################################
+# REDIS CONFIGURATION
+REDIS_URL = os.environ.get('REDIS_URL')
+
+# Celery
+CELERY_BROKER_URL     = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
+
+# Cache (if using django-redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
 }

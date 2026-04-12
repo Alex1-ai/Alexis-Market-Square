@@ -13,99 +13,148 @@ from django.template.loader import render_to_string
 import json
 from app.settings import STANDARD_DELIVERY
 from django.urls import reverse
+from django.views.decorators.http import require_POST
 import logging
+
+from django.contrib.auth.decorators import login_required
+from django.db import transaction
+from django.db.models import F
+from .tasks import send_order_emails
+from .utils import send_email
+
 logger = logging.getLogger(__name__)
 
 
 
+@login_required
+@require_POST
 def payments(request):
-    # PayPal sends JSON; Pay-on-Delivery sends a regular form POST
-    if request.content_type == 'application/json':
-        body = json.loads(request.body)
+    # ── 1. Parse request ──────────────────────────────────────────────
+    is_json = request.content_type == 'application/json'
+    if is_json:
+        body           = json.loads(request.body)
         order_id       = body['orderID']
         trans_id       = body['transID']
         payment_method = body['payment_method']
         status         = body['status']
     else:
-        logger.info("payments on delivery view started")
         order_id       = request.POST.get('orderID')
-        trans_id       = 'POD-' + order_id  # no real transaction ID for cash
+        trans_id       = f'POD-{order_id}'
         payment_method = request.POST.get('payment_method')
         status         = 'PENDING'
-    logger.info("payments view started")
-    order = Order.objects.get(
-        user=request.user, is_ordered=False, order_number=order_id
+
+    print("payments view started | order_id=%s method=%s", order_id, payment_method)
+
+    # ── 2. Prefetch cart items once ───────────────────────────────────
+    cart_items = (
+        CartItem.objects
+        .filter(user=request.user)
+        .select_related('product')
+        .prefetch_related('variations')
     )
 
-    payment = Payment(
-        user=request.user,
-        payment_id=trans_id,
-        payment_method=payment_method,
-        amount_paid=order.order_total,
-        status=status
+    if not cart_items.exists():
+        logger.warning("payments: empty cart for user=%s", request.user.id)
+        return JsonResponse({'error': 'Cart is empty'}, status=400) if is_json \
+            else redirect('cart')
+
+    # ── 3. All DB writes in a single atomic transaction ───────────────
+    print("starting database transaction")
+    with transaction.atomic():
+        order = (
+            Order.objects
+            .select_for_update()          # lock row against race conditions
+            .get(user=request.user, is_ordered=False, order_number=order_id)
+        )
+
+        # Create payment
+        payment = Payment.objects.create(
+            user=request.user,
+            payment_id=trans_id,
+            payment_method=payment_method,
+            amount_paid=order.order_total,
+            status=status,
+        )
+
+        order.payment    = payment
+        order.is_ordered = True
+        order.save(update_fields=['payment', 'is_ordered'])
+
+        # Bulk-build OrderProduct objects
+        order_products = []
+        product_ids    = []
+        quantities     = {}
+
+        for item in cart_items:
+            order_products.append(OrderProduct(
+                order=order,
+                payment=payment,
+                user=request.user,
+                product=item.product,
+                quantity=item.quantity,
+                product_price=item.product.price,
+                ordered=True,
+            ))
+            product_ids.append(item.product_id)
+            quantities[item.product_id] = quantities.get(item.product_id, 0) + item.quantity
+
+        # Single bulk insert instead of N individual saves
+        created = OrderProduct.objects.bulk_create(order_products)
+
+        # Attach M2M variations after bulk_create (requires individual saves)
+        for op, item in zip(created, cart_items):
+            variations = item.variations.all()
+            if variations.exists():
+                op.variations.set(variations)
+
+        # Atomic stock decrement — safe under concurrent orders
+        for product_id, qty in quantities.items():
+            Product.objects.filter(id=product_id).update(stock=F('stock') - qty)
+
+        # Clear cart inside transaction so it's rolled back on failure
+        CartItem.objects.filter(user=request.user).delete()
+
+    logger.info("order saved | order_id=%s payment_id=%s", order.id, payment.id)
+    # print("order saved | order_id=%s payment_id=%s", order.id, payment.id)
+
+
+    # ── 4. Fire emails asynchronously via Celery ─────────────────────
+    # send_order_emails.delay(request.user.id, order.id)
+    # ── 4. Fire emails asynchronously  ─────────────────────
+    # Admin email
+    admin_email = EmailMessage(
+        'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
+        'Hi Admin,\nSomeone just placed an order.',
+        to=[ADMIN_EMAIL]
     )
-    payment.save()
-    order.payment = payment
-    order.is_ordered = True
-    order.save()
-    logger.info("order saved")
-    # Move cart items to OrderProduct table
-    logger.info("cart items processed")
-    cart_items = CartItem.objects.filter(user=request.user)
-    for item in cart_items:
-        orderproduct = OrderProduct()
-        orderproduct.order_id      = order.id
-        orderproduct.payment       = payment
-        orderproduct.user_id       = request.user.id
-        orderproduct.product_id    = item.product_id
-        orderproduct.quantity      = item.quantity
-        orderproduct.product_price = item.product.price
-        orderproduct.ordered       = True
-        orderproduct.save()
+    # send_email(admin_email)
+    admin_email.send()
 
-        cart_item      = CartItem.objects.get(id=item.id)
-        product_variation = cart_item.variations.all()
-        orderproduct   = OrderProduct.objects.get(id=orderproduct.id)
-        orderproduct.variations.set(product_variation)
-        orderproduct.save()
 
-        product        = Product.objects.get(id=item.product_id)
-        product.stock -= item.quantity
-        product.save()
+    # Customer email
+    message = render_to_string('orders/order_received_email.html', {
+        'user': request.user,
+        'order': order,
+    })
 
-    CartItem.objects.filter(user=request.user).delete()
-    try:
-        # Admin email
-        mail_subject = 'ALEXIS-MARKET-SQUARE ORDER MESSAGE'
-        message      = 'Hi Admin,\nSomeone just placed an order.'
-        EmailMessage(mail_subject, message, to=[ADMIN_EMAIL]).send(fail_silently=True)
-        logger.info("emails sent")
-        # Customer email
-        mail_subject = 'Order Successful!'
-        message = render_to_string('orders/order_received_email.html', {
-            'user': request.user,
-            'order': order,
-        })
+    customer_email = EmailMessage(
+        'Order Successful!',
+        message,
+        to=[request.user.email]
+    )
+    # send_email(customer_email)
+    customer_email.send()
+    print("sent email")
 
-        logger.info("emails sent")
-        EmailMessage(mail_subject, message, to=[request.user.email]).send(fail_silently=True)
-        logger.info("emails sent")
-    except Exception as e:
-        print("Error sending email:", e)
-    # ── Different response for each payment type ──
-    if request.content_type == 'application/json':
-        # PayPal: JavaScript fetch() expects JSON back
+    # ── 5. Return response ────────────────────────────────────────────
+    if is_json:
         return JsonResponse({
             'order_number': order.order_number,
-            'transID': payment.payment_id
+            'transID': payment.payment_id,
         })
-    else:
-        logger.info("emails sent 2")
-        # Pay on Delivery: normal redirect
-        url = reverse('order_complete')
-        return redirect(
-            f"{url}?order_number={order.order_number}&payment_id={payment.payment_id}"
-        )
+
+    url = reverse('order_complete')
+    return redirect(f"{url}?order_number={order.order_number}&payment_id={payment.payment_id}")
 
 
 # def payments(request):
