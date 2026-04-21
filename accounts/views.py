@@ -139,7 +139,7 @@ def login(request):
                     return redirect(nextPage)
 
             except:
-                return redirect('dashboard')
+                return redirect('markets')
         else:
             messages.error(request, "Invalid login credentials. Try again.")
             return redirect('login')
