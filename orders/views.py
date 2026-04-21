@@ -331,12 +331,26 @@ def order_complete(request):
         }
          # ── 4. Fire emails asynchronously  ─────────────────────
         # Admin email
+        # admin_email = EmailMessage(
+        #     'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
+        #     'Hi Admin,\nSomeone just placed an order.',
+        #     to=[ADMIN_EMAIL]
+        # )
+        # # send_email(admin_email)
+        # admin_email.send()
+
+        # Admin email
+        admin_message = render_to_string('orders/order_admin_email.html', {
+            'order': order,
+            'ordered_products': ordered_products,
+            'subtotal': subtotal,
+        })
+
         admin_email = EmailMessage(
             'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
-            'Hi Admin,\nSomeone just placed an order.',
+            admin_message,
             to=[ADMIN_EMAIL]
         )
-        # send_email(admin_email)
         admin_email.send()
 
 

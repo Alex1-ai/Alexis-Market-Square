@@ -1,0 +1,40 @@
+{% autoescape off %}
+Hi Admin,
+
+A new order has been placed!
+
+ORDER DETAILS
+=============
+Order Number : {{ order.order_number }}
+Date         : {{ order.created_at }}
+
+CUSTOMER INFO
+=============
+Name    : {{ order.first_name }} {{ order.last_name }}
+Phone   : {{ order.phone }}
+Email   : {{ order.email }}
+
+DELIVERY ADDRESS
+================
+{{ order.address_line_1 }}
+{% if order.address_line_2 %}{{ order.address_line_2 }}{% endif %}
+{{ order.city }}, {{ order.state }}
+{{ order.country }}
+
+ITEMS ORDERED
+=============
+{% for item in ordered_products %}
+- {{ item.product.product_name }} x{{ item.quantity }} @ ${{ item.product_price }} each
+{% endfor %}
+
+ORDER SUMMARY
+=============
+Subtotal : ${{ subtotal }}
+Tax      : ${{ order.tax }}
+Total    : ${{ order.order_total }}
+
+{% if order.order_note %}
+Order Note: {{ order.order_note }}
+{% endif %}
+
+{% endautoescape %}
