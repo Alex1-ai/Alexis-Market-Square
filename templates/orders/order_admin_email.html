@@ -24,13 +24,13 @@ DELIVERY ADDRESS
 ITEMS ORDERED
 =============
 {% for item in ordered_products %}
-- {{ item.product.product_name }} x{{ item.quantity }} @ ${{ item.product_price }} each
+- {{ item.product.product_name }} x{{ item.quantity }} @ ${{ item.product_price }} each{% if item.product.category %} [{{ item.product.category.category_name }}]{% endif %}{% if item.variations.all %} ({% for v in item.variations.all %}{{ v.variation_category|capfirst }}: {{ v.variation_value }}{% if not forloop.last %}, {% endif %}{% endfor %}){% endif %}
+
 {% endfor %}
 
 ORDER SUMMARY
 =============
 Subtotal : ${{ subtotal }}
-<!-- Tax      : ${{ order.tax }} -->
 Total    : ${{ order.order_total }}
 
 {% if order.order_note %}
