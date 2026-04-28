@@ -9,7 +9,7 @@
         <!-- Header -->
         <div class="section-header text-center mb-4">
             {% if products %}
-                <h2>Welcome To {{ category }} Store</h2>
+                <h2>Welcome To {{ category  }} Store</h2>
                 <p>Your happiness is our Passion. We provide Maximum delivery services to our valued customers</p>
             {% else %}
                 <h2>No Shop Available</h2>
@@ -22,14 +22,13 @@
             {% if products %}
                 {% for product in products %}
                     {% if product.stock > 0 %}
-
                         <div class="col-12 col-sm-6 col-md-6 col-lg-4 mb-4">
                             <div class="card h-100">
 
                                 <!-- Image -->
                                 <div class="position-relative">
                                     <a href="{{ product.get_url }}">
-                                        <img src="{{ product.image.url }}" class="w-100" />
+                                        <img src="{{ product.image.url }}" class="w-100" style="height: 250px" />
                                     </a>
 
                                     <!-- Badge -->

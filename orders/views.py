@@ -19,8 +19,8 @@ import logging
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import F
-from .tasks import send_order_emails
-from .utils import send_email
+# from .tasks import send_order_emails
+# from .utils import send_email
 
 logger = logging.getLogger(__name__)
 
@@ -306,20 +306,20 @@ def place_order(request, total=0, quantity=0):
 
 
 def order_complete(request):
-
+    print("order complete view started")
     order_number = request.GET.get('order_number')
     transID = request.GET.get('payment_id')
-
+    print("order_number=%s transID=%s", order_number, transID)
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
-
+        print("order 2")
         subtotal = 0
         for i in ordered_products:
             subtotal += i.product_price * i.quantity
 
         payment = Payment.objects.get(payment_id=transID)
-
+        print("order 1")
         context = {
             'order': order,
             'ordered_products': ordered_products,
