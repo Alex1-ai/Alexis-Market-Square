@@ -20,7 +20,7 @@ def market_store(request, market_slug=None):
         markets = get_object_or_404(Market, slug=market_slug)
         shops = Category.objects.filter(market=markets)
         shop_count = shops.count()
-        print(shops)
+        # print(shops)/
     else:
         shops = Category.objects.all().filter()
         shop_count = shops.count()
@@ -45,15 +45,15 @@ def store(request, category_slug=None):
         categories = get_object_or_404(Category, slug=category_slug)
         products = Product.objects.filter(
             category=categories, is_available=True).order_by('id')
-        print(products)
+        # print(products)
         paginator = Paginator(products, num_of_product)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)
         product_count = products.count()
     else:
         products = Product.objects.all().filter(is_available=True).order_by('id')
-        print("ramand", products)
-        print(products[0].image.url)
+        # print("ramand", products)
+        # print(products[0].image.url)
         paginator = Paginator(products, num_of_product)
         page = request.GET.get('page')
         paged_products = paginator.get_page(page)

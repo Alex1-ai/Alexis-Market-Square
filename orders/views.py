@@ -43,7 +43,7 @@ def payments(request):
         payment_method = request.POST.get('payment_method')
         status         = 'PENDING'
 
-    print("payments view started | order_id=%s method=%s", order_id, payment_method)
+    # print("payments view started | order_id=%s method=%s", order_id, payment_method)
 
     # ── 2. Prefetch cart items once ───────────────────────────────────
     cart_items = (
@@ -59,7 +59,7 @@ def payments(request):
             else redirect('cart')
 
     # ── 3. All DB writes in a single atomic transaction ───────────────
-    print("starting database transaction")
+    # print("starting database transaction")
     with transaction.atomic():
         order = (
             Order.objects
