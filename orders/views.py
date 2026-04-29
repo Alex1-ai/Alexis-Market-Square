@@ -345,7 +345,7 @@ def order_complete(request):
             'ordered_products': ordered_products,
             'subtotal': subtotal,
         })
-
+        print(ADMIN_EMAIL)
         admin_email = EmailMessage(
             'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
             admin_message,

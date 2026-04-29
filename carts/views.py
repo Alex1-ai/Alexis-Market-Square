@@ -17,7 +17,7 @@ def _cart_id(request):
 
 
 def add_cart(request, product_id):
-    print("Helloo")
+    # print("Helloo")
     current_user = request.user
     product = Product.objects.get(id=product_id)
     print(current_user, product)
@@ -232,7 +232,7 @@ def cart(request, total=0, quantity=0, cart_items=None):
         'grand_total': grand_total,
         'standard_delivery': STANDARD_DELIVERY
     }
-    print(quantity, total)
+    # print(quantity, total)
     return render(request, 'store/cart.html', context)
 
 
