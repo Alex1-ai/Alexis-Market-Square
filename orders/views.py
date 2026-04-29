@@ -309,7 +309,7 @@ def order_complete(request):
     print("order complete view started")
     order_number = request.GET.get('order_number')
     transID = request.GET.get('payment_id')
-    print("order_number=%s transID=%s", order_number, transID)
+    # print("order_number=%s transID=%s", order_number, transID)
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
