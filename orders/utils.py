@@ -19,6 +19,7 @@ def send_emails_async(admin_email, customer_email):
         try:
             admin_email.send()
             customer_email.send()
+            print("async emails sent ")
         except Exception as e:
             print("Email error:", e)
 
