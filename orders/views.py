@@ -116,7 +116,40 @@ def payments(request):
 
     logger.info("order saved | order_id=%s payment_id=%s", order.id, payment.id)
     # print("order saved | order_id=%s payment_id=%s", order.id, payment.id)
+    try:
+                # Admin email
+        admin_message = render_to_string('orders/order_admin_email.html', {
+            'order': order,
+            'ordered_products': order_products,
+            # 'subtotal': subtotal,
+        })
+        # print(ADMIN_EMAIL)
+        admin_email = EmailMessage(
+            'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
+            admin_message,
+            to=[ADMIN_EMAIL]
+        )
+        # admin_email.send()
 
+
+        # Customer email
+        message = render_to_string('orders/order_received_email.html', {
+            'user': request.user,
+            'order': order,
+        })
+
+        customer_email = EmailMessage(
+            'Order Successful!',
+            message,
+            to=[request.user.email]
+        )
+        # send_email(customer_email)
+        # customer_email.send()
+        send_emails_async(admin_email, customer_email)
+        print("sent email")
+
+    except Exception as e:
+        print("error sending email:", e)
 
     # ── 4. Fire emails asynchronously via Celery ─────────────────────
     # send_order_emails.delay(request.user.id, order.id)
@@ -339,36 +372,7 @@ def order_complete(request):
         # # send_email(admin_email)
         # admin_email.send()
 
-        # Admin email
-        admin_message = render_to_string('orders/order_admin_email.html', {
-            'order': order,
-            'ordered_products': ordered_products,
-            'subtotal': subtotal,
-        })
-        # print(ADMIN_EMAIL)
-        admin_email = EmailMessage(
-            'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
-            admin_message,
-            to=[ADMIN_EMAIL]
-        )
-        # admin_email.send()
 
-
-        # Customer email
-        message = render_to_string('orders/order_received_email.html', {
-            'user': request.user,
-            'order': order,
-        })
-
-        customer_email = EmailMessage(
-            'Order Successful!',
-            message,
-            to=[request.user.email]
-        )
-        # send_email(customer_email)
-        # customer_email.send()
-        send_emails_async(admin_email, customer_email)
-        print("sent email")
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')
