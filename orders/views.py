@@ -20,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.db.models import F
 # from .tasks import send_order_emails
-# from .utils import send_email
+from .utils import send_emails_async
 
 logger = logging.getLogger(__name__)
 
@@ -345,13 +345,13 @@ def order_complete(request):
             'ordered_products': ordered_products,
             'subtotal': subtotal,
         })
-        print(ADMIN_EMAIL)
+        # print(ADMIN_EMAIL)
         admin_email = EmailMessage(
             'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
             admin_message,
             to=[ADMIN_EMAIL]
         )
-        admin_email.send()
+        # admin_email.send()
 
 
         # Customer email
@@ -366,7 +366,8 @@ def order_complete(request):
             to=[request.user.email]
         )
         # send_email(customer_email)
-        customer_email.send()
+        # customer_email.send()
+        send_emails_async(admin_email, customer_email)
         print("sent email")
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
