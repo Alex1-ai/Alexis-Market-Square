@@ -251,16 +251,16 @@ def place_order(request, total=0, quantity=0):
     grand_total = total
 
     if request.method == 'POST':
-        print("Entering the form")
+        # print("Entering the form")
         payment_type = request.POST.get('payment_method')
-        print("Payment method is:", payment_type)
+        # print("Payment method is:", payment_type)
         form = OrderForm(request.POST)
-        print("Creeating an instance of the form")
+        # print("Creeating an instance of the form")
         if form.is_valid():
             print("Enter is valid")
             # store all the billing information include order table
             data = Order()
-            print("num 1")
+            # print("num 1")
             data.user = current_user
             data.first_name = form.cleaned_data['first_name']
             data.last_name = form.cleaned_data['last_name']
@@ -313,13 +313,13 @@ def order_complete(request):
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
-        print("order 2")
+        # print("order 2")
         subtotal = 0
         for i in ordered_products:
             subtotal += i.product_price * i.quantity
 
         payment = Payment.objects.get(payment_id=transID)
-        print("order 1")
+        # print("order 1")
         context = {
             'order': order,
             'ordered_products': ordered_products,
