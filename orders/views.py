@@ -145,7 +145,9 @@ def payments(request):
         )
         # send_email(customer_email)
         # customer_email.send()
-        send_emails_async(admin_email, customer_email)
+        # send_emails_async(admin_email, customer_email)
+        customer_email.send()
+        admin_email.send()
         print("sent email")
 
     except Exception as e:
