@@ -40,5 +40,6 @@ whitenoise = "==6.4.0"
 redis = "*"
 celery = "*"
 django-redis = "*"
+resend = "*"
 
 [dev-packages]

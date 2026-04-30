@@ -301,6 +301,9 @@ ADMIN_EMAIL = os.environ.get('ADMIN_EMAIL')
 # EMAIL_PORT=587
 
 
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+
+
 # DELIVERY FEE
 STANDARD_DELIVERY = 5
 
