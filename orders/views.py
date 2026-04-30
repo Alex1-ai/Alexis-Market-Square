@@ -17,6 +17,7 @@ from django.views.decorators.http import require_POST
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db import transaction
 from django.db.models import F
 # from .tasks import send_order_emails
@@ -383,7 +384,7 @@ def order_complete(request):
         # admin_email.send()
         print("sent email")
 
-
+        messages.success(request, "Your order has been placed successfully! Note: Delivery cost will be calculated based on your location. Call: +234 8067139902 for fast delivery and support.")
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
         return redirect('home')

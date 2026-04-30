@@ -14,12 +14,14 @@
 		<a href="{% url 'markets' %}" class="btn btn-success">Shop more</a>
 	</div>
 </div> -->
-
+{% include 'alert.html' %}
 <div class="container" style="margin-top: 50px;">
     {% if payment.status == 'PENDING' %}
         <center><i class="fas fa-clock" style="font-size: 72px;margin-bottom: 20px;color: #FFC107;"></i></center>
         <h2 class="text-center">Order Placed Successfully!</h2>
         <p class="text-center text-muted">Please have <strong>₦{{ order.order_total }}</strong> ready when your order arrives.</p>
+        <p class="text-center text-muted">Delivery fees vary based on your location. Call: +234 8067139902 for fast delivery and support. </p>
+
     {% else %}
         <center><i class="fas fa-check-circle" style="font-size: 72px;margin-bottom: 20px;color: #28A745;"></i></center>
         <h2 class="text-center">Payment Successful</h2>
