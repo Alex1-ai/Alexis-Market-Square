@@ -347,18 +347,18 @@ def order_complete(request):
             'subtotal': subtotal,
         })
         print(ADMIN_EMAIL)
-        # admin_email = EmailMessage(
-        #     'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
-        #     admin_message,
-        #     to=[ADMIN_EMAIL]
-        # )
-        send_email_custom(
-            ADMIN_EMAIL,
-
-            "ALEXIS-MARKET-SQUARE ORDER MESSAGE",
-            admin_message
-
+        admin_email = EmailMessage(
+            'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
+            admin_message,
+            to=[ADMIN_EMAIL]
         )
+        # send_email_custom(
+        #     ADMIN_EMAIL,
+
+        #     "ALEXIS-MARKET-SQUARE ORDER MESSAGE",
+        #     admin_message
+
+        # )
         # admin_email.send()
 
 
@@ -368,20 +368,20 @@ def order_complete(request):
             'order': order,
         })
 
-        send_email_custom(
+        # send_email_custom(
 
 
-            request.user.email,
-            "ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
-             message
+        #     request.user.email,
+        #     "ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
+        #      message
 
-        )
-
-        # customer_email = EmailMessage(
-        #     'Order Successful!',
-        #     message,
-        #     to=[request.user.email]
         # )
+
+        customer_email = EmailMessage(
+            'Order Successful!',
+            message,
+            to=[request.user.email]
+        )
         # send_email_resend(
         #     to_email=request.user.email,
         #     subject="ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
@@ -397,8 +397,8 @@ def order_complete(request):
         # customer_email.send()
         # send_emails_async(admin_email)
         # send_emails_async(customer_email)
-        # customer_email.send()
-        # admin_email.send()
+        customer_email.send()
+        admin_email.send()
         print("sent email")
 
         messages.success(request, "Your order has been placed successfully! Note: Delivery cost will be calculated based on your location. Call: +234 8067139902 for fast delivery and support.")
