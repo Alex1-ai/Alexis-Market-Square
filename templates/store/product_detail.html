@@ -81,7 +81,7 @@
 
             </div>
             <p class="mb-4">{{single_product.description}}</p>
-            {% if 'gas' not in single_product.product_name|lower and 'palm-oil' not in single_product.product_name|lower %}
+            {% if 'gas' not in single_product.product_name|lower and 'palm-oil' not in single_product.product_name|lower and 'laundry' not in single_product.product_name|lower %}
             <div class="mb-4">
                 <h5>Select Color:</h5>
                 <div class="btn-group" role="group" aria-label="Color selection">
@@ -104,7 +104,7 @@
             </div>
 
             {% endif %}
-            {% if 'palm-oil' not in single_product.product_name|lower %}
+            {% if 'palm-oil' not in single_product.product_name|lower and 'laundry' not in single_product.product_name|lower %}
             <div class="mb-4">
                 <h5><label for="quantity" class="form-label">Select Size: </label></h5></h5>
                 <!-- <input type="number" class="form-control" id="quantity" value="1" min="1" style="width: 80px;"> -->

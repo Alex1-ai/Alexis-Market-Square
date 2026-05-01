@@ -37,7 +37,7 @@ def market_store(request, market_slug=None):
 
 
 def store(request, category_slug=None):
-    num_of_product = 8
+    num_of_product = 20
     categories = None
     products = None
 

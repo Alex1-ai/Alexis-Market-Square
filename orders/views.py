@@ -22,6 +22,7 @@ from django.db import transaction
 from django.db.models import F
 # from .tasks import send_order_emails
 from .utils import send_emails_async
+from .mailer import send_email_custom
 
 
 logger = logging.getLogger(__name__)
@@ -346,10 +347,17 @@ def order_complete(request):
             'subtotal': subtotal,
         })
         print(ADMIN_EMAIL)
-        admin_email = EmailMessage(
-            'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
-            admin_message,
-            to=[ADMIN_EMAIL]
+        # admin_email = EmailMessage(
+        #     'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
+        #     admin_message,
+        #     to=[ADMIN_EMAIL]
+        # )
+        send_email_custom(
+            ADMIN_EMAIL,
+
+            "ALEXIS-MARKET-SQUARE ORDER MESSAGE",
+            admin_message
+
         )
         # admin_email.send()
 
@@ -360,11 +368,20 @@ def order_complete(request):
             'order': order,
         })
 
-        customer_email = EmailMessage(
-            'Order Successful!',
-            message,
-            to=[request.user.email]
+        send_email_custom(
+
+
+            request.user.email,
+            "ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
+             message
+
         )
+
+        # customer_email = EmailMessage(
+        #     'Order Successful!',
+        #     message,
+        #     to=[request.user.email]
+        # )
         # send_email_resend(
         #     to_email=request.user.email,
         #     subject="ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
@@ -378,8 +395,8 @@ def order_complete(request):
         # )
         # send_email(customer_email)
         # customer_email.send()
-        send_emails_async(admin_email)
-        send_emails_async(customer_email)
+        # send_emails_async(admin_email)
+        # send_emails_async(customer_email)
         # customer_email.send()
         # admin_email.send()
         print("sent email")
@@ -387,8 +404,10 @@ def order_complete(request):
         messages.success(request, "Your order has been placed successfully! Note: Delivery cost will be calculated based on your location. Call: +234 8067139902 for fast delivery and support.")
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
-        return redirect('home')
+        messages.error(request, "Something went wrong. Please try again or contact support (+2348067139902) for further assistannce.")
+        return redirect('markets')
 
     except Exception as e:
         print("Error in order_complete vieew:", e)
-        return redirect('home')
+        messages.error(request, "Something went wrong. Please contact support (+2348067139902) for further assistannce.")
+        return redirect('markets')

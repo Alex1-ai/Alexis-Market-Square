@@ -33,7 +33,7 @@ import cloudinary.api
 SECRET_KEY= os.environ.get('SECRET_KEY', "secret-key-if-not-configured-in-environment")
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.environ.get('DEBUG', False)
-DEBUG = False
+DEBUG =False
 
 ALLOWED_HOSTS = [ "*", "alexis-market-square.onrender.com", 'localhost', '127.0.0.1']
 DATABASE_URL = os.environ.get("DATABASE_URL")
