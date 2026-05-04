@@ -23,6 +23,7 @@ from django.db.models import F
 # from .tasks import send_order_emails
 from .utils import send_emails_async
 from .mailer import send_email_custom
+from .tasks import send_order_emails
 
 
 logger = logging.getLogger(__name__)
@@ -122,7 +123,7 @@ def payments(request):
 
 
     # ── 4. Fire emails asynchronously via Celery ─────────────────────
-    # send_order_emails.delay(request.user.id, order.id)
+    send_order_emails.delay(request.user.id, order.id)
 
 
     # ── 5. Return response ────────────────────────────────────────────
@@ -316,7 +317,7 @@ def order_complete(request):
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
-        print("ordered products:", ordered_products.category)
+        # print("ordered products:", ordered_products.category)
 
         subtotal = 0
         for i in ordered_products:
@@ -342,17 +343,17 @@ def order_complete(request):
         # )
         # # send_email(admin_email)
         # admin_email.send()
-        admin_message = render_to_string('orders/order_admin_email.html', {
-            'order': order,
-            'ordered_products': ordered_products,
-            'subtotal': subtotal,
-        })
-        print(ADMIN_EMAIL)
-        admin_email = EmailMessage(
-            'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
-            admin_message,
-            to=[ADMIN_EMAIL]
-        )
+        # admin_message = render_to_string('orders/order_admin_email.html', {
+        #     'order': order,
+        #     'ordered_products': ordered_products,
+        #     'subtotal': subtotal,
+        # })
+        # print(ADMIN_EMAIL)
+        # admin_email = EmailMessage(
+        #     'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
+        #     admin_message,
+        #     to=[ADMIN_EMAIL]
+        # )
         # send_email_custom(
         #     ADMIN_EMAIL,
 
@@ -364,10 +365,10 @@ def order_complete(request):
 
 
         # Customer email
-        message = render_to_string('orders/order_received_email.html', {
-            'user': request.user,
-            'order': order,
-        })
+        # message = render_to_string('orders/order_received_email.html', {
+        #     'user': request.user,
+        #     'order': order,
+        # })
 
         # send_email_custom(
 
@@ -378,11 +379,11 @@ def order_complete(request):
 
         # )
 
-        customer_email = EmailMessage(
-            'Order Successful!',
-            message,
-            to=[request.user.email]
-        )
+        # customer_email = EmailMessage(
+        #     'Order Successful!',
+        #     message,
+        #     to=[request.user.email]
+        # )
         # send_email_resend(
         #     to_email=request.user.email,
         #     subject="ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
@@ -396,8 +397,8 @@ def order_complete(request):
         # )
         # send_email(customer_email)
         # customer_email.send()
-        send_emails_async(admin_email)
-        send_emails_async(customer_email)
+        # send_emails_async(admin_email)
+        # send_emails_async(customer_email)
         # customer_email.send()
         # admin_email.send()
         print("sent email")

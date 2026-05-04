@@ -1,11 +1,22 @@
-version: "3.8"
+# version: "3.8"
+# services:
+#   web:
+#     build:
+#       context: .
+#     volumes:
+#       - .:/app
+#     image: web:django
+#     command: "sh /app/build.sh"
+#     ports:
+#       - "8000:8000"
+
+
 services:
   web:
-    build:
-      context: .
-    volumes:
-      - .:/app
-    image: web:django
-    command: "sh /app/build.sh"
-    ports:
-      - "8000:8000"
+    build: .
+    command: gunicorn app.wsgi:application
+  worker:
+    build: .
+    command: celery -A app worker -l info
+  redis:
+    image: redis

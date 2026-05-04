@@ -337,19 +337,19 @@ CLOUDINARY_STORAGE = {
 
 ##########################################
 # REDIS CONFIGURATION
-# REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL')
 
-# # Celery
-# CELERY_BROKER_URL     = REDIS_URL
-# CELERY_RESULT_BACKEND = REDIS_URL
+# Celery
+CELERY_BROKER_URL     = REDIS_URL
+CELERY_RESULT_BACKEND = REDIS_URL
 
-# # Cache (if using django-redis)
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django_redis.cache.RedisCache',
-#         'LOCATION': REDIS_URL,
-#         'OPTIONS': {
-#             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-#         }
-#     }
-# }
+# Cache (if using django-redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
