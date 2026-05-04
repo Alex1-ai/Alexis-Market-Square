@@ -313,6 +313,7 @@ def order_complete(request):
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
+        print("ordered products:", ordered_products.category)
 
         subtotal = 0
         for i in ordered_products:

@@ -23,7 +23,7 @@
 					{% for shop in shops %}
 					<div class="col-lg-6 mb-4">
 
-
+                <a href="{{ shop.get_url }}" style="text-decoration: none; color: inherit;">
 					<div class="card">
 						<img class="card-img-top" src="{{shop.cart_image.url}}" alt="">
 
@@ -45,6 +45,9 @@
 
 						</div>
 					</div>
+				</a>
+
+
 				</div>
 
 
