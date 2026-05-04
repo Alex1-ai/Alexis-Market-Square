@@ -337,7 +337,7 @@ CLOUDINARY_STORAGE = {
 
 ##########################################
 # REDIS CONFIGURATION
-REDIS_URL = os.environ.get('REDIS_URL')
+REDIS_URL = os.environ.get('REDIS_URL2')
 
 # Celery
 CELERY_BROKER_URL     = REDIS_URL
