@@ -11,16 +11,19 @@ import json
 # Create your views here.
 from django.template.loader import render_to_string
 import json
-from app.settings import STANDARD_DELIVERY
+from app.settings import STANDARD_DELIVERY, RESEND_API_KEY
 from django.urls import reverse
 from django.views.decorators.http import require_POST
 import logging
 
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.db import transaction
 from django.db.models import F
-from .tasks import send_order_emails
-from .utils import send_email
+# from .tasks import send_order_emails
+from .utils import send_emails_async
+from .mailer import send_email_custom
+
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +46,7 @@ def payments(request):
         payment_method = request.POST.get('payment_method')
         status         = 'PENDING'
 
-    print("payments view started | order_id=%s method=%s", order_id, payment_method)
+    # print("payments view started | order_id=%s method=%s", order_id, payment_method)
 
     # ── 2. Prefetch cart items once ───────────────────────────────────
     cart_items = (
@@ -59,7 +62,7 @@ def payments(request):
             else redirect('cart')
 
     # ── 3. All DB writes in a single atomic transaction ───────────────
-    print("starting database transaction")
+    # print("starting database transaction")
     with transaction.atomic():
         order = (
             Order.objects
@@ -251,16 +254,16 @@ def place_order(request, total=0, quantity=0):
     grand_total = total
 
     if request.method == 'POST':
-        print("Entering the form")
+        # print("Entering the form")
         payment_type = request.POST.get('payment_method')
-        print("Payment method is:", payment_type)
+        # print("Payment method is:", payment_type)
         form = OrderForm(request.POST)
-        print("Creeating an instance of the form")
+        # print("Creeating an instance of the form")
         if form.is_valid():
             print("Enter is valid")
             # store all the billing information include order table
             data = Order()
-            print("num 1")
+            # print("num 1")
             data.user = current_user
             data.first_name = form.cleaned_data['first_name']
             data.last_name = form.cleaned_data['last_name']
@@ -306,10 +309,10 @@ def place_order(request, total=0, quantity=0):
 
 
 def order_complete(request):
-
+    print("order complete view started")
     order_number = request.GET.get('order_number')
     transID = request.GET.get('payment_id')
-
+    # print("order_number=%s transID=%s", order_number, transID)
     try:
         order = Order.objects.get(order_number=order_number, is_ordered=True)
         ordered_products = OrderProduct.objects.filter(order_id=order.id)
@@ -320,7 +323,7 @@ def order_complete(request):
             subtotal += i.product_price * i.quantity
 
         payment = Payment.objects.get(payment_id=transID)
-
+        # print("order 1")
         context = {
             'order': order,
             'ordered_products': ordered_products,
@@ -339,20 +342,25 @@ def order_complete(request):
         # )
         # # send_email(admin_email)
         # admin_email.send()
-
-        # Admin email
         admin_message = render_to_string('orders/order_admin_email.html', {
             'order': order,
             'ordered_products': ordered_products,
             'subtotal': subtotal,
         })
-
+        print(ADMIN_EMAIL)
         admin_email = EmailMessage(
             'ALEXIS-MARKET-SQUARE ORDER MESSAGE',
             admin_message,
             to=[ADMIN_EMAIL]
         )
-        admin_email.send()
+        # send_email_custom(
+        #     ADMIN_EMAIL,
+
+        #     "ALEXIS-MARKET-SQUARE ORDER MESSAGE",
+        #     admin_message
+
+        # )
+        # admin_email.send()
 
 
         # Customer email
@@ -361,14 +369,46 @@ def order_complete(request):
             'order': order,
         })
 
+        # send_email_custom(
+
+
+        #     request.user.email,
+        #     "ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
+        #      message
+
+        # )
+
         customer_email = EmailMessage(
             'Order Successful!',
             message,
             to=[request.user.email]
         )
+        # send_email_resend(
+        #     to_email=request.user.email,
+        #     subject="ALEXIS-MARKET-SQUARE ORDER SUCCESSFUL",
+        #     html_content=message
+        # )
+
+        # send_email_resend(
+        #     to_email=ADMIN_EMAIL,
+        #     subject="ALEXIS-MARKET-SQUARE ORDER MESSAGE",
+        #     html_content=admin_message
+        # )
         # send_email(customer_email)
-        customer_email.send()
+        # customer_email.send()
+        send_emails_async(admin_email)
+        send_emails_async(customer_email)
+        # customer_email.send()
+        # admin_email.send()
         print("sent email")
+
+        messages.success(request, "Your order has been placed successfully! Note: Delivery cost will be calculated based on your location. Call: +234 8067139902 for fast delivery and support.")
         return render(request, 'orders/order_complete.html', context)
     except (Payment.DoesNotExist, Order.DoesNotExist):
-        return redirect('home')
+        messages.error(request, "Something went wrong. Please try again or contact support (+2348067139902) for further assistannce.")
+        return redirect('markets')
+
+    except Exception as e:
+        print("Error in order_complete vieew:", e)
+        messages.error(request, "Something went wrong. Please contact support (+2348067139902) for further assistannce.")
+        return redirect('markets')

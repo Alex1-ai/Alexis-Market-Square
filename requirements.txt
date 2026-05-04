@@ -27,6 +27,7 @@ python-ipware==2.0.1
 pytz==2023.3.post1
 requests==2.28.2
 redis
+resend
 s3transfer==0.8.2
 six==1.16.0
 sqlparse==0.4.3

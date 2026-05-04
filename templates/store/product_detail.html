@@ -13,7 +13,7 @@
     <div class="row">
         <!-- Product Images -->
         <div class="col-md-6 mb-4">
-            <img src="{{single_product.image.url}}" alt="Product" class="img-fluid rounded mb-3 product-image" id="mainImage">
+            <img src="{{single_product.image.url}}" alt="Product" class="img-fluid w-70 rounded mb-3 product-image" id="mainImage" style="height: 500px">
             <div class="d-flex justify-content-between">
                 {% for image in product_gallery %}
                 <img src="{{image.image.url}}" alt="Thumbnail 2" class="thumbnail rounded" onclick="changeImage(event, this.src)">
@@ -45,15 +45,33 @@
 
                                 <span>
 
-                                    <i class="fa fa-star{%if single_product.averageReview < 0.5%}-o{%elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o{%endif%}" aria-hidden="true"></i>
-                                    <i class="fa fa-star{%if single_product.averageReview < 1.5%}-o{%elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}-half-o{%endif%}" aria-hidden="true"></i>
-                                    <i class="fa fa-star{%if single_product.averageReview < 2.5%}-o{%elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}-half-o{%endif%}" aria-hidden="true"></i>
-                                    <i class="fa fa-star{%if single_product.averageReview < 3.5%}-o{%elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}-half-o{%endif%}" aria-hidden="true"></i>
-                                    <i class="fa fa-star{%if single_product.averageReview < 4.5%}-o{%elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}-half-o{%endif%}" aria-hidden="true"></i>
                                     {% if single_product.countReview != 0 %}
+                                            <div class="user_rating">
+                                                <ul class="list-unstyled d-flex flex-row gap-1 m-0">
+                                                    {% for i in "12345" %}
+                                                        <li>
+                                                            {% if single_product.averageReview >= forloop.counter %}
+                                                                <i class="fa fa-star text-warning"></i>
+                                                            {% elif single_product.averageReview >= forloop.counter|add:"-1" and single_product.averageReview < forloop.counter %}
+                                                                <i class="fa fa-star text-dark"></i>
+                                                            {% else %}
+                                                                <i class="fa fa-star text-dark"></i>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+
                                     ({{single_product.countReview}} reviews)
+                                                </ul>
+
+                                            </div>
+
                                     {% else %}
-                                    <span class="ms-2">( No Reviews )</span>
+                                        <i class="fa fa-star{%if single_product.averageReview < 0.5%}-o{%elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o{%endif%}" aria-hidden="true"></i>
+                                        <i class="fa fa-star{%if single_product.averageReview < 1.5%}-o{%elif single_product.averageReview >= 1.5 and single_product.averageReview < 2 %}-half-o{%endif%}" aria-hidden="true"></i>
+                                        <i class="fa fa-star{%if single_product.averageReview < 2.5%}-o{%elif single_product.averageReview >= 2.5 and single_product.averageReview < 3 %}-half-o{%endif%}" aria-hidden="true"></i>
+                                        <i class="fa fa-star{%if single_product.averageReview < 3.5%}-o{%elif single_product.averageReview >= 3.5 and single_product.averageReview < 4 %}-half-o{%endif%}" aria-hidden="true"></i>
+                                        <i class="fa fa-star{%if single_product.averageReview < 4.5%}-o{%elif single_product.averageReview >= 4.5 and single_product.averageReview < 5 %}-half-o{%endif%}" aria-hidden="true"></i>
+                                        <span class="ms-2">( No Reviews )</span>
                                     {% endif %}
                                 </span>
 
@@ -63,7 +81,7 @@
 
             </div>
             <p class="mb-4">{{single_product.description}}</p>
-            {% if 'gas' not in single_product.product_name|lower %}
+            {% if 'gas' not in single_product.product_name|lower and 'palm-oil' not in single_product.product_name|lower and 'laundry' not in single_product.product_name|lower %}
             <div class="mb-4">
                 <h5>Select Color:</h5>
                 <div class="btn-group" role="group" aria-label="Color selection">
@@ -86,7 +104,7 @@
             </div>
 
             {% endif %}
-
+            {% if 'palm-oil' not in single_product.product_name|lower and 'laundry' not in single_product.product_name|lower %}
             <div class="mb-4">
                 <h5><label for="quantity" class="form-label">Select Size: </label></h5></h5>
                 <!-- <input type="number" class="form-control" id="quantity" value="1" min="1" style="width: 80px;"> -->
@@ -99,6 +117,7 @@
                 </select>
             </div>
             </div>
+            {% endif %}
             {% if single_product.stock <= 0 %}
                 <h5 class="text-danger" style="margin-top: 18px;"> Out of Stock</h5>
             {% else %}
@@ -152,7 +171,26 @@
                                     <div class="user_review_container d-flex flex-column flex-sm-row">
                                         <div class="user">
                                             <div class="user_pic"></div>
+
                                             <div class="user_rating">
+                                                <ul class="list-unstyled d-flex flex-row gap-1 m-0">
+                                                    {% for i in "12345" %}
+                                                        <li>
+                                                            {% if review.rating >= forloop.counter %}
+                                                                <i class="fa fa-star text-warning"></i>
+                                                            {% elif review.rating >= forloop.counter|add:"-1" and review.rating < forloop.counter %}
+                                                                <i class="fa fa-star text-dark"></i>
+                                                            {% else %}
+                                                                <i class="fa fa-star text-dark"></i>
+                                                            {% endif %}
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+
+
+
+                                            <!-- <div class="user_rating">
 
                                                 <ul class="star_rating">
                                                     <div class="rating-star">
@@ -163,13 +201,15 @@
                                                             <li><i class="fa fa-star{%if review.rating == 2.5%}-half-o{%elif review.rating < 3%}-o{%endif%}" aria-hidden="true"></i></li>
                                                             <li><i class="fa fa-star{%if review.rating == 3.5%}-half-o{%elif review.rating < 4%}-o{%endif%}" aria-hidden="true"></i></li>
                                                             <li><i class="fa fa-star{%if review.rating == 4.5%}-half-o{%elif review.rating < 5%}-o{%endif%}" aria-hidden="true"></i></li>
-                                                            <!-- <span>({{object.countReview}}) rewiews</span> -->
+
                                                         </span>
                                                     </div>
                                                 </ul>
-                                            </div>
+
+                                            </div> -->
                                         </div>
-                                        <div class="review">
+                                        <br>
+                                        <div class="review mt-1">
                                             <div class="review_date">{{ review.updated_at }}</div>
                                             <div class="user_name">{{ review.subject}}</div>
                                             <p>{{review.review}}.</p>

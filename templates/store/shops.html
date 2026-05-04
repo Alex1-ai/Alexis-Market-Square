@@ -23,9 +23,9 @@
 					{% for shop in shops %}
 					<div class="col-lg-6 mb-4">
 
-                <a href="{{ shop.get_url }}" style="text-decoration: none; color: inherit;">
+
 					<div class="card">
-						<img class="card-img-top" src="{{shop.cart_image.url}}" alt="">
+						<img class="card-img-top" src="{{shop.cart_image.url}}" alt="" style="height: 300px">
 
 						<div class="card-body">
 							<h5 class="card-title">{{shop.category_name}}<br>
@@ -45,9 +45,6 @@
 
 						</div>
 					</div>
-				</a>
-
-
 				</div>
 
 
