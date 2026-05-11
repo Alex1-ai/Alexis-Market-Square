@@ -1,0 +1,41 @@
+name: Server Health Check
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Server Health
+        id: health
+        run: |
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" https://alexis-market-square.onrender.com)
+
+          echo "HTTP Status: $STATUS"
+
+          if [ "$STATUS" -ne 200 ]; then
+            echo "SERVER_DOWN=true" >> $GITHUB_ENV
+            exit 1
+          fi
+
+      # EMAIL NOTIFICATION
+      - name: Send Email Alert
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Server Down Alert 🚨
+          to: your-email@gmail.com
+          from: GitHub Monitor
+          body: |
+            Your server is DOWN.
+            URL: https://alexis-market-square.onrender.com
+
