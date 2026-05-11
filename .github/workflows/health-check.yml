@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Server Down Alert 🚨
-          to: your-email@gmail.com
+          to: ${{ secrets.MY_EMAIL }}
           from: GitHub Monitor
           body: |
             Your server is DOWN.
